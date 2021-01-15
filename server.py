@@ -8,11 +8,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-    return 'Hello World', 200
+    s = 'power x y\nsqrt x'
+    return s, 200
 
 
 @app.route('/power')
-def service1():
+def power():
     if request.method == 'POST':
         return 'Not supported', 401
     x = request.args.get('x')
@@ -23,21 +24,21 @@ def service1():
         x = int(x)
         y = int(y)
         return str(x ** y), 200
-    except Exception:
-        return 'Bad integer format', 400
+    except Exception as e:
+        return f'Bad integer format {e}', 400
 
 
 @app.route('/sqrt')
-def service2():
+def sqrt():
     if request.method == 'POST':
         return 'Not supported', 401
     x = request.args.get('x')
     if x is None:
         return 'Parameter is absent', 400
     try:
-        return str(math.sqrt(x)), 200
-    except Exception:
-        return 'Bad number format', 400
+        return str(math.sqrt(float(x))), 200
+    except Exception as e:
+        return f'Bad number format {e}', 400
 
 
 if __name__ == '__main__':

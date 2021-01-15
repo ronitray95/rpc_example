@@ -5,28 +5,33 @@ import requests
 
 SERVER_URL = 'http://127.0.0.1:5000'
 CODES = {200: 'Success', 400: 'Bad request',
-         401: 'Unauthorized', 503: 'Service unavailable'}
+         401: 'Unauthorized', 503: 'Service unavailable', 500: 'Server error'}
 
 
-def testServer():
+def init():
+    methods = ''
     try:
         r = requests.get(SERVER_URL)
-        return r.content.decode('utf-8'), CODES[r.status_code]
+        methods = r.content.decode('utf-8')
     except Exception:
         return 'Unable to contact server', CODES[503]
-
-
-def power(x, y):
-    try:
-        r = requests.get(f'{SERVER_URL}/power?x={x}&y={y}')
-        return r.content.decode('utf-8'), CODES[r.status_code]
-    except Exception:
-        return 'Unable to contact server', CODES[503]
-
-
-def sqrt(x):
-    try:
-        r = requests.get(f'{SERVER_URL}/sqrt?x={x}')
-        return r.content.decode('utf-8'), CODES[r.status_code]
-    except Exception:
-        return 'Unable to contact server', CODES[503]
+    for line in methods.split('\n'):
+        arr = line.split(' ')
+        params = ''
+        for i in range(len(arr)):
+            if i == 0:
+                continue
+            params = f'{params}{arr[i]}=x{[i-1]}&'
+        postObj = {}
+        postObj
+        exec(f'''def {arr[0]}(*x): 
+                    i=0
+                    post={{}}
+                    for a in {arr}[1:]:
+                        #print(a)
+                        post[a]=x[i]
+                        i=i+1
+                    
+                    #print('In RPC',post)
+                    r=requests.get('{SERVER_URL}/{arr[0]}',post)
+                    return r.content.decode('utf-8'), CODES[r.status_code] ''', globals())
